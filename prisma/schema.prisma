@@ -18,3 +18,17 @@ model User {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
+
+model Challenge {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  subTitle    String?
+  description String
+  type        String
+  difficulty  String?
+  points      Int
+  flagHash    String?
+  hints       Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

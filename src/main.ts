@@ -10,7 +10,6 @@ import {
   frameguard,
   hidePoweredBy,
   hsts,
-  ieNoOpen,
   noSniff,
   referrerPolicy,
   xssFilter,
