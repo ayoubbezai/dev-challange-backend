@@ -6,7 +6,7 @@ import {ChallengesRepository} from './challenges.repository'
 @Module({
   controllers: [ChallengesController],
   providers: [ChallengesService , ChallengesRepository,PrismaService],
-  exports: [ ChallengesRepository],
+  exports: [ ChallengesRepository , ChallengesService],
   
 })
 export class ChallengesModule {}
