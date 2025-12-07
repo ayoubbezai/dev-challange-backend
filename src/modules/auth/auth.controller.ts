@@ -1,7 +1,8 @@
-import { Controller, Post, Body  , Res} from '@nestjs/common';
+import { Controller, Post, Body  , Res ,Get , Req ,UseGuards} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
-import type { Response } from 'express';
+import type { Response , Request } from 'express';
+import { JwtCookieGuard } from 'src/modules/auth/jwt-cookie.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -9,7 +10,7 @@ export class AuthController {
 
     @Post('login')
   async login(@Body() dto: LoginDto ,  @Res({ passthrough: true }) res: Response) {
-    const token = await this.authService.login(dto);
+    const {userResponse , access_token : token} = await this.authService.login(dto);
 
     res.cookie('access_token', token, {
       httpOnly: true,
@@ -17,7 +18,24 @@ export class AuthController {
       sameSite: 'lax', // or 'none' if using cross-site cookies
       maxAge: 1000 * 60 * 60 * 24, // 1 day
     });
+    return {
+      success : true,
+      message: 'Login successful',
+      data :  userResponse
+    }
+  
 
-    return { message: 'Login successful' };
   }
+
+    @Get('me')
+    @UseGuards(JwtCookieGuard)
+    async me(@Req()  req:Request) {
+    const userResponse =  await this.authService.me((req as any).user.sub)
+
+      return {
+      success : true,
+      message: 'auth successful',
+      data :  userResponse
+    }
+    }
 }

@@ -21,10 +21,33 @@ export class AuthService {
     const payload = { sub: user.id, email: user.email, role: user.role };
     const access_token = this.jwtService.sign(payload);
 
-    return { access_token };
+    const userResponse = {
+      id : user.id , 
+      nick_name : user.nick_name,
+      email : user.email
+    }
+
+    return { userResponse , access_token };
+
+
 
 
   }
 
+ async me(userId: string) {
+    const user = await this.authRepository.findById(userId);
 
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    return {
+      id: user.id,
+      nick_name: user.nick_name,
+      email: user.email,
+      role: user.role,
+    };
+
+
+}
 }

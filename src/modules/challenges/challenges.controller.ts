@@ -4,7 +4,7 @@ import { CreateChallengeDto } from "./dto/create-challenge.dto";
 import { GetChallengesDto  } from "./dto/get-challenges.dto";
 import { Roles } from '../auth/roles.decorator';
 
-import { JwtAuthGuard } from 'src/modules/auth/jwt-auth.guard';
+import { JwtCookieGuard } from 'src/modules/auth/jwt-cookie.guard';
 import {  RolesGuard } from 'src/modules/auth/roles.guard';
 
 @Controller('challenges')
@@ -12,14 +12,14 @@ export class ChallengesController {
       constructor(private readonly challengesService: ChallengesService) {}
     
       @Post()
-      @UseGuards(JwtAuthGuard , RolesGuard)
+      @UseGuards(JwtCookieGuard , RolesGuard)
       @Roles('admin')
       async addChallenge(@Body() dto: CreateChallengeDto) {
         return this.challengesService.create(dto);
       }
     
  @Get()
-  @UseGuards(JwtAuthGuard) 
+  @UseGuards(JwtCookieGuard) 
   getChallenges(@Query() query: GetChallengesDto) {
     return this.challengesService.getAll(query);
   }
