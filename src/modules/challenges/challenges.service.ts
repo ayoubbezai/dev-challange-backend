@@ -37,7 +37,10 @@ export class ChallengesService {
             : [],
         }));
 
-        return sanitizedChallenges
+        return {
+          data : sanitizedChallenges ,
+          meta : data.meta
+        } 
 
     } catch (error) {
       console.error('Error create challnage:', error);

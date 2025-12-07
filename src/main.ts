@@ -14,6 +14,7 @@ import {
   referrerPolicy,
   xssFilter,
 } from 'helmet';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -30,6 +31,9 @@ async function bootstrap() {
   app.use(crossOriginEmbedderPolicy());
   app.use(dnsPrefetchControl());
   app.use(contentSecurityPolicy({ directives: { defaultSrc: ["'self'"] } }));
+
+    app.use(cookieParser());
+
 
   app.enableCors({
     origin: process.env.CORS_ORIGIN || '*',

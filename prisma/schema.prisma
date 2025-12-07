@@ -24,6 +24,7 @@ model Challenge {
   title       String
   subTitle    String?
   description String
+  link        String?
   type        String
   difficulty  String?
   points      Int

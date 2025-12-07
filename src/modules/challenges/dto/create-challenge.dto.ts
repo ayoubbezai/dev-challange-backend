@@ -21,6 +21,11 @@ export class CreateChallengeDto {
   @MaxLength(200)
   subTitle?: string;
 
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  link?: string;
+
   @IsString()
   @IsNotEmpty()
   @MaxLength(1000)

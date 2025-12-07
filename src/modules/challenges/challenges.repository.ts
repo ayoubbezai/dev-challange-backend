@@ -36,6 +36,7 @@ async getChallenges ( query : GetChallengesDto){
       select: {
         id: true,
         title: true,
+        link: true,
         subTitle: true,
         description: true,
         type: true,
