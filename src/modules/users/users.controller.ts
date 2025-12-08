@@ -10,5 +10,4 @@ export class UsersController {
   async registerParticipant(@Body() dto: CreateParticipantDto) {
     return this.usersService.registerParticipant(dto);
   }
-
 }

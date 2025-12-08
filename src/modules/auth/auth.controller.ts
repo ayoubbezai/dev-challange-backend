@@ -38,4 +38,18 @@ export class AuthController {
       data :  userResponse
     }
     }
+    @Post('logout')
+  logout(@Res({ passthrough: true }) res: Response) {
+    // Clear the cookie
+    res.clearCookie('access_token', {
+      httpOnly: true,
+      secure: false, // true in production
+      sameSite: 'lax',
+    });
+
+    return {
+      success: true,
+      message: "Logged out successfully",
+    }
+    }
 }

@@ -39,7 +39,7 @@ export class ChallengesService {
 
         return {
           data : sanitizedChallenges ,
-          meta : data.meta
+          pagination : data.meta
         } 
 
     } catch (error) {
