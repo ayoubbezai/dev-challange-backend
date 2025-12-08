@@ -15,6 +15,7 @@ model User {
   nick_name  String   @unique
   email      String   @unique
   password   String
+  points   Int        @default(0)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }

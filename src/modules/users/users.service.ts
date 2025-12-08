@@ -26,4 +26,15 @@ export class UsersService {
       throw new InternalServerErrorException('Failed to register participant');
     }
   }
+
+  async leaderBoard (){
+    try{
+      const data =  await this.usersRepository.leaderBoard()
+      return data
+
+    }catch  (error){
+            console.error('Error getting  participant:', error);
+      throw new InternalServerErrorException('Failed to getting participant');
+    }
+  }
 }
