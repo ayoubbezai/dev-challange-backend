@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { useContainer } from 'class-validator';
 import {
   contentSecurityPolicy,
   crossOriginEmbedderPolicy,
@@ -18,6 +19,9 @@ import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Let class-validator resolve custom validators from Nest's DI container
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   // Helmet security headers individually
   app.use(hidePoweredBy());

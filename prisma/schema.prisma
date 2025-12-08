@@ -9,19 +9,20 @@
     }
 
 model User {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  id         String       @id @default(auto()) @map("_id") @db.ObjectId
   full_name  String
   role       String
-  nick_name  String   @unique
-  email      String   @unique
+  nick_name  String       @unique
+  email      String       @unique
   password   String
-  points   Int        @default(0)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  points     Int          @default(0)
+  submissions Submition[] // relation: one user -> many submissions
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
 }
 
 model Challenge {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   subTitle    String?
   description String
@@ -31,6 +32,21 @@ model Challenge {
   points      Int
   flagHash    String?
   hints       Json?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  submissions Submition[] // relation: one challenge -> many submissions
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 }
+
+model Submition {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  status      String      @default("pending")
+  link        String?     
+  points      Int
+  userId      String
+  challengeId String
+  user        User       @relation(fields: [userId], references: [id])
+  challenge   Challenge  @relation(fields: [challengeId], references: [id])
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+

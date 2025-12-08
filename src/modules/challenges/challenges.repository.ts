@@ -62,5 +62,21 @@ async getChallenges ( query : GetChallengesDto){
    }
 }
 
+async findById(id: string): Promise<Partial<Challenge> | null> {
+    if (!id) return null;
+
+    return this.prisma.challenge.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        type: true,
+        flagHash: true,
+        points: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+  }
+
 
 }

@@ -46,6 +46,9 @@ export class UsersRepository {
       orderBy: {
         points: "desc",
       },
+      where : {
+        role : 'PARTICIPANT'
+      }
     });
   }
 
