@@ -40,7 +40,11 @@ async function bootstrap() {
 
 
   app.enableCors({
-    origin: '*',
+    origin: [
+    "http://localhost:3000",
+    "https://devchallenge.gdgbatna.com/",
+    "https://devchallenge.gdgbatna.com",
+  ] ,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
