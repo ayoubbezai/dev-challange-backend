@@ -28,6 +28,6 @@ async function bootstrap() {
     exposedHeaders: ['Set-Cookie', 'Authorization'],
   });
   
-  await app.listen(3005);
+  await app.listen(3000, '0.0.0.0');
 }
 bootstrap();
