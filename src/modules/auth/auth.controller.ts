@@ -15,7 +15,8 @@ export class AuthController {
     res.cookie('access_token', token, {
       httpOnly: true,
       secure: true, // true in production with HTTPS
-      sameSite: 'lax', // or 'none' if using cross-site cookies
+      sameSite: 'none', // or 'none' if using cross-site cookies
+      domain: '.gdgbatna.com',
       maxAge: 1000 * 60 * 60 * 24, // 1 day
     });
     return {
