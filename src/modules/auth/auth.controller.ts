@@ -14,7 +14,7 @@ export class AuthController {
 
     res.cookie('access_token', token, {
       httpOnly: true,
-      secure: false, // true in production with HTTPS
+      secure: true, // true in production with HTTPS
       sameSite: 'lax', // or 'none' if using cross-site cookies
       maxAge: 1000 * 60 * 60 * 24, // 1 day
     });
@@ -43,7 +43,7 @@ export class AuthController {
     // Clear the cookie
     res.clearCookie('access_token', {
       httpOnly: true,
-      secure: false, // true in production
+      secure: true, // true in production
       sameSite: 'lax',
     });
 
