@@ -17,7 +17,7 @@ async createChallenge(data: CreateChallengeDto) {
   return this.prisma.challenge.create({ data: prismaData });
 }
 
-async getChallenges ( query : GetChallengesDto){
+async getChallenges ( query : GetChallengesDto , userId : string){
   const {page = 1 , limit = 10 , type , difficulty } = query ; 
   const skip = limit * (page - 1)
 
@@ -25,6 +25,7 @@ async getChallenges ( query : GetChallengesDto){
 
    if(type) where.type = type
    if(difficulty) where.difficulty = difficulty
+
 
 
    const [challnges , total] = await Promise.all([
@@ -45,7 +46,19 @@ async getChallenges ( query : GetChallengesDto){
         createdAt: true,
         updatedAt: true,
         hints: true,
+        submissions: {
+          where: { userId : userId  },
+          select: {
+            id: true,
+            status: true,
+            points: true,
+            link: true,
+            createdAt: true,
+          },
+          orderBy: { createdAt: "desc" },
+        },
     },
+    
 
     }),
     this.prisma.challenge.count({ where }),

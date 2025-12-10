@@ -3,6 +3,7 @@ import {ChallengesService} from './challenges.service'
 import { CreateChallengeDto } from "./dto/create-challenge.dto";
 import { GetChallengesDto  } from "./dto/get-challenges.dto";
 import { Roles } from '../auth/roles.decorator';
+import { User } from '../../common/decorators/user.decorator';
 
 import { JwtCookieGuard } from 'src/modules/auth/jwt-cookie.guard';
 import {  RolesGuard } from 'src/modules/auth/roles.guard';
@@ -20,7 +21,7 @@ export class ChallengesController {
     
  @Get()
   @UseGuards(JwtCookieGuard) 
-  getChallenges(@Query() query: GetChallengesDto) {
-    return this.challengesService.getAll(query);
+  getChallenges(@Query() query: GetChallengesDto, @User() user) {
+    return this.challengesService.getAll(query , user);
   }
 }

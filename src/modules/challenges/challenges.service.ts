@@ -26,9 +26,13 @@ export class ChallengesService {
     }
     }
 
-    async getAll(query : GetChallengesDto){
+    async getAll(query : GetChallengesDto , user : any){
     try{
-        const data = await this.challengesRepository.getChallenges(query);
+      console.log(user.sub,'user')
+      const userId = user.sub;
+      const data = await this.challengesRepository.getChallenges(query,userId);
+
+
 
       const sanitizedChallenges = data.data.map(ch => ({
         ...ch,
