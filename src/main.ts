@@ -11,6 +11,7 @@ async function bootstrap() {
       'http://localhost:3000',
       'https://localhost:3000',
       'https://devchallenge.gdgbatna.com',
+      'https://gdgbatna.com'
     ],
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
     credentials: true,
