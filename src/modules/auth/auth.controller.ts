@@ -12,14 +12,13 @@ export class AuthController {
   async login(@Body() dto: LoginDto ,  @Res({ passthrough: true }) res: Response) {
     const {userResponse , access_token : token} = await this.authService.login(dto);
 
-    res.cookie('access_token', token, {
-      httpOnly: true,
-      secure: true, // true in production with HTTPS
-      sameSite: 'none', // or 'none' if using cross-site cookies
-  domain: "https://devchallenge.gdgbatna.com/", // allow subdomains
-  path: "/", 
-        maxAge: 1000 * 60 * 60 * 24, // 1 day
-    });
+    // res.cookie('access_token', token, {
+    //   httpOnly: true,
+    //   secure: true, // true in production with HTTPS
+    //   sameSite: 'none', // or 'none' if using cross-site cookies
+    //   path: "/", 
+    //     maxAge: 1000 * 60 * 60 * 24, // 1 day
+    // });
     return {
       success : true,
       message: 'Login successful',

@@ -15,6 +15,7 @@ async function bootstrap() {
     ],
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
     credentials: true,
+    
     allowedHeaders: [
       'Content-Type',
       'Authorization',
@@ -27,6 +28,6 @@ async function bootstrap() {
     exposedHeaders: ['Set-Cookie', 'Authorization'],
   });
   
-  await app.listen(3000);
+  await app.listen(3005);
 }
 bootstrap();
