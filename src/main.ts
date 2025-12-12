@@ -1,4 +1,3 @@
-// In your main.ts or app.module.ts
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
@@ -15,7 +14,6 @@ async function bootstrap() {
     ],
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
     credentials: true,
-    
     allowedHeaders: [
       'Content-Type',
       'Authorization',
@@ -28,6 +26,9 @@ async function bootstrap() {
     exposedHeaders: ['Set-Cookie', 'Authorization'],
   });
   
-  await app.listen(3005, '0.0.0.0');
+  const port = process.env.PORT || 3000; 
+  await app.listen(port, '0.0.0.0');
+  console.log(`Application running on port ${port}`);
 }
+
 bootstrap();
