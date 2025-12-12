@@ -24,7 +24,9 @@ export class AuthService {
     const userResponse = {
       id : user.id , 
       nick_name : user.nick_name,
-      email : user.email
+      email : user.email,
+      role: user.role,
+
     }
 
     return { userResponse , access_token };

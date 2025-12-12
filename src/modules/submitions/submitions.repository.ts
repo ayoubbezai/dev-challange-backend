@@ -60,5 +60,30 @@ export class SubmitionsRepository {
     where: { userId, challengeId },
   });
 }
+async findAll() {
+  return this.prisma.submition.findMany({
+    orderBy: { createdAt: "desc" },
+    include: {
+      user: {
+        select: {
+          id: true,
+          full_name: true,
+          nick_name: true,
+          email: true,
+        },
+      },
+      challenge: {
+        select: {
+          id: true,
+          title: true,
+          subTitle: true,
+          points: true,
+          type: true,
+        },
+      },
+    },
+  });
+}
+
 
 }

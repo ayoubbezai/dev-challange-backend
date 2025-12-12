@@ -9,7 +9,7 @@ import { ChallengesRepository } from '../challenges/challenges.repository';
 import { SubmitionsRepository } from './submitions.repository';
 import { compare } from 'bcryptjs';
 import { PrismaService } from '../../database/prisma.service';
-
+import {SubmissionResource} from './submission.resource'
 @Injectable()
 export class SubmitionsService {
   constructor(
@@ -97,5 +97,24 @@ export class SubmitionsService {
       status: 'pending',
       data: challenge,
     };
+  }
+
+  async getSubmitions(){
+    try {
+          const submissions = await this.submitionsRepository.findAll();
+          const submissionsResource =   SubmissionResource.toCollection(submissions);
+
+          return {
+            success: true,
+            message: 'Submission fetched',
+            data: submissionsResource,
+          };
+
+    }catch(e){
+          return {
+            success: false,
+            message: 'error get Submissions',
+          };
+    }
   }
 }
