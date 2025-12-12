@@ -16,7 +16,7 @@ export class UsersRepository {
         email: data.email,
         password: data.password,
         role: "PARTICIPANT",
-        points: 0, // start with 0 points
+        points: 0,
       },
     });
   }
@@ -42,6 +42,24 @@ export class UsersRepository {
         id: true,
         points: true,
         nick_name: true,
+      },
+      orderBy: {
+        points: "desc",
+      },
+      where : {
+        role : 'PARTICIPANT'
+      }
+    });
+  }
+
+    async participants(): Promise<Partial<User>[]> {
+    return this.prisma.user.findMany({
+      select: {
+        id: true,
+        points: true,
+        nick_name: true,
+        email: true,
+        full_name: true,
       },
       orderBy: {
         points: "desc",

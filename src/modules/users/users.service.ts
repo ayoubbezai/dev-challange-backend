@@ -37,4 +37,15 @@ export class UsersService {
       throw new InternalServerErrorException('Failed to getting participant');
     }
   }
+
+    async participants (){
+    try{
+      const data =  await this.usersRepository.participants()
+      return data
+
+    }catch  (error){
+            console.error('Error getting  participant:', error);
+      throw new InternalServerErrorException('Failed to getting participant');
+    }
+  }
 }
