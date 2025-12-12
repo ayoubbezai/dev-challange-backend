@@ -3,12 +3,14 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import type { Response , Request } from 'express';
 import { JwtCookieGuard } from 'src/modules/auth/jwt-cookie.guard';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
     @Post('login')
+    @Throttle({ default: { limit: 5, ttl: 60 } })  
   async login(@Body() dto: LoginDto ,  @Res({ passthrough: true }) res: Response) {
     const {userResponse , access_token : token} = await this.authService.login(dto);
 
@@ -31,6 +33,8 @@ export class AuthController {
 
     @Get('me')
     @UseGuards(JwtCookieGuard)
+    @Throttle({ default: { limit: 60, ttl: 60 } })  
+
     async me(@Req()  req:Request) {
     const userResponse =  await this.authService.me((req as any).user.sub)
 
@@ -41,6 +45,7 @@ export class AuthController {
     }
     }
     @Post('logout')
+    @Throttle({ default: { limit: 5, ttl: 60 } })  
   logout(@Res({ passthrough: true }) res: Response) {
     // Clear the cookie
     res.clearCookie('access_token', {

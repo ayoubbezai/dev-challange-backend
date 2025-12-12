@@ -14,6 +14,7 @@ export class SubmitionsController {
 
   @UseGuards(JwtCookieGuard)
   @Post()
+  @Throttle({ default: { limit: 1, ttl: 60 } }) 
   async addSubmission(@Body() dto: AddSubmissionDto, @User() user) {
     return this.submitionsService.addSubmission(dto, user.sub);
   }
@@ -21,6 +22,7 @@ export class SubmitionsController {
   @UseGuards(JwtCookieGuard , RolesGuard)
   @Roles('admin')
   @Get()
+  @Throttle({ default: { limit: 100, ttl: 60 } })  
   async getSubmission() {
     return this.submitionsService.getSubmitions();
     
