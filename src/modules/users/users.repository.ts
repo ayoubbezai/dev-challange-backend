@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../../database/prisma.service";
 import { CreateParticipantDto } from "./dto/create-participant.dto";
 import { Prisma, User } from "@prisma/client";
+import {EditParticipantDto} from './dto/edit-participant.dto'
 
 @Injectable()
 export class UsersRepository {
@@ -70,4 +71,14 @@ export class UsersRepository {
     });
   }
 
+
+  async editUser({ userID, points }: EditParticipantDto) {
+    return this.prisma.submition.update({
+      where: { id: userID },
+      data: {
+        points,
+      },
+    });
+  }
+  
 }

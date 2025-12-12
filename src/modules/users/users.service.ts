@@ -1,7 +1,8 @@
-import { Injectable, ConflictException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, ConflictException, InternalServerErrorException , NotFoundException } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
 import { CreateParticipantDto } from './dto/create-participant.dto';
 import * as bcrypt from 'bcryptjs';
+import {EditParticipantDto} from './dto/edit-participant.dto'
 
 @Injectable()
 export class UsersService {
@@ -48,4 +49,23 @@ export class UsersService {
       throw new InternalServerErrorException('Failed to getting participant');
     }
   }
+
+  async editUser(dto: EditParticipantDto) {
+      const updated = await this.usersRepository.editUser(dto);
+  
+      if (!updated) {
+        throw new NotFoundException({
+          success: false,
+          message: 'participant not found',
+          status: 'error',
+        });
+      }
+  
+      return {
+        success: true,
+        message: 'participant updated successfully',
+        data: updated,
+      };
+    }
+  
 }

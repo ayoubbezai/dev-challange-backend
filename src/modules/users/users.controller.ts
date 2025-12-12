@@ -1,10 +1,11 @@
-import { Controller , Post , Body  ,Get , UseGuards} from '@nestjs/common';
+import { Controller , Post , Body  ,Get , UseGuards , Put} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateParticipantDto } from './dto/create-participant.dto';
 import { JwtCookieGuard } from 'src/modules/auth/jwt-cookie.guard';
 import { Throttle } from '@nestjs/throttler';
 import { Roles } from '../auth/roles.decorator';
 import {  RolesGuard } from 'src/modules/auth/roles.guard';
+import {EditParticipantDto} from './dto/edit-participant.dto'
 
 
 @Controller()
@@ -42,5 +43,13 @@ export class UsersController {
       message: 'participants board got successful',
       data :  data
     }
+  }
+
+  @UseGuards(JwtCookieGuard, RolesGuard)
+  @Roles('admin')
+  @Put()
+  @Throttle({ default: { limit: 100, ttl: 60 } })
+  async editParticipant(@Body() dto: EditParticipantDto) {
+    return this.usersService.editUser(dto);
   }
 }
