@@ -1,11 +1,13 @@
-import { Controller, Post, Body, UseGuards  ,Get } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards  ,Get , Put } from '@nestjs/common';
 import { SubmitionsService } from './submitions.service';
 import { AddSubmissionDto } from './dto/add-submition.dto';
 import { JwtCookieGuard } from '../auth/jwt-cookie.guard';
 import { User } from '../../common/decorators/user.decorator';
+import {EditSubmissionDto} from './dto/edit-submition.dto'
 
 
 import { Roles } from '../auth/roles.decorator';
+import { Throttle } from '@nestjs/throttler';
 
 import {  RolesGuard } from 'src/modules/auth/roles.guard';
 @Controller('submissions')
@@ -27,4 +29,13 @@ export class SubmitionsController {
     return this.submitionsService.getSubmitions();
     
   }
+
+
+@UseGuards(JwtCookieGuard, RolesGuard)
+@Roles('admin')
+@Put()
+@Throttle({ default: { limit: 100, ttl: 60 } })
+async editSubmission(@Body() dto: EditSubmissionDto) {
+  return this.submitionsService.editSubmition(dto);
+}
 }

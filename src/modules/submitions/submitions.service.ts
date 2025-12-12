@@ -10,6 +10,9 @@ import { SubmitionsRepository } from './submitions.repository';
 import { compare } from 'bcryptjs';
 import { PrismaService } from '../../database/prisma.service';
 import {SubmissionResource} from './submission.resource'
+import {EditSubmissionDto} from './dto/edit-submition.dto'
+
+
 @Injectable()
 export class SubmitionsService {
   constructor(
@@ -117,4 +120,24 @@ export class SubmitionsService {
           };
     }
   }
+
+   async editSubmition(dto: EditSubmissionDto) {
+    const updated = await this.submitionsRepository.editSubmition(dto);
+
+    if (!updated) {
+      throw new NotFoundException({
+        success: false,
+        message: 'Submission not found',
+        status: 'error',
+      });
+    }
+
+    return {
+      success: true,
+      message: 'Submission updated successfully',
+      data: updated,
+    };
+  }
+
+
 }

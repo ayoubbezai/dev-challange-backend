@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../../database/prisma.service";
 import {Submission , AddPoints} from './types'
+import {EditSubmissionDto} from './dto/edit-submition.dto'
 @Injectable()
 export class SubmitionsRepository {
   constructor(private readonly prisma: PrismaService) {}
@@ -48,6 +49,11 @@ export class SubmitionsRepository {
     });
   }
 
+    async findById(submitionId: string) {
+    return this.prisma.submition.findUnique({
+      where: { id:submitionId },
+    });
+  }
   // Optional: find all submissions for a challenge
   async findByChallenge(challengeId: string) {
     return this.prisma.submition.findMany({
@@ -81,6 +87,16 @@ async findAll() {
           type: true,
         },
       },
+    },
+  });
+}
+
+async editSubmition({ SubmissionID, status, points }: EditSubmissionDto) {
+  return this.prisma.submition.update({
+    where: { id: SubmissionID },
+    data: {
+      status,
+      points,
     },
   });
 }
