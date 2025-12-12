@@ -47,7 +47,7 @@ export class UsersController {
 
   @UseGuards(JwtCookieGuard, RolesGuard)
   @Roles('admin')
-  @Put()
+  @Put('participants')
   @Throttle({ default: { limit: 100, ttl: 60 } })
   async editParticipant(@Body() dto: EditParticipantDto) {
     return this.usersService.editUser(dto);
