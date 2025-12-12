@@ -73,7 +73,7 @@ export class UsersRepository {
 
 
   async editUser({ userID, points }: EditParticipantDto) {
-    return this.prisma.submition.update({
+    return this.prisma.user.update({
       where: { id: userID },
       data: {
         points,

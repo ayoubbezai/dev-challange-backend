@@ -64,7 +64,6 @@ export class UsersService {
       return {
         success: true,
         message: 'participant updated successfully',
-        data: updated,
       };
     }
   
