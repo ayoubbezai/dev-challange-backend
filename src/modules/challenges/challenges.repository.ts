@@ -46,17 +46,17 @@ async getChallenges ( query : GetChallengesDto , userId : string){
         createdAt: true,
         updatedAt: true,
         hints: true,
-        submissions: {
-          where: { userId : userId  },
-          select: {
-            id: true,
-            status: true,
-            points: true,
-            link: true,
-            createdAt: true,
-          },
-          orderBy: { createdAt: "desc" },
-        },
+        // submissions: {
+        //   where: { userId : userId  },
+        //   select: {
+        //     id: true,
+        //     status: true,
+        //     points: true,
+        //     link: true,
+        //     createdAt: true,
+        //   },
+        //   orderBy: { createdAt: "desc" },
+        // },
     },
     
 
