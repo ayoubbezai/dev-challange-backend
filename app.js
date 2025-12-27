@@ -1,6 +1,6 @@
 import { hash } from "bcryptjs";
 
-const password = "correct-flag-for-testing";
+const password = "";
 
 const hashed = await hash(password, 10);
 
