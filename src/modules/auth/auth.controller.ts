@@ -17,13 +17,13 @@ async login(
 ) {
   const { userResponse, access_token } = await this.authService.login(dto);
 
-  res.cookie('access_token', access_token, {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'strict', // IMPORTANT
-    path: '/',
-    maxAge: 1000 * 60 * 60 * 24, // 1 day
-  });
+res.cookie('access_token', access_token, {
+  httpOnly: true,
+  secure: true,          // REQUIRED
+  sameSite: 'none',      // REQUIRED for cross-site
+  path: '/',
+  maxAge: 1000 * 60 * 60 * 24,
+});
 
   return {
     success: true,
