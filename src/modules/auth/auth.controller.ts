@@ -9,27 +9,29 @@ import { Throttle } from '@nestjs/throttler';
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
-    @Post('login')
-    @Throttle({ default: { limit: 5, ttl: 60 } })  
-  async login(@Body() dto: LoginDto ,  @Res({ passthrough: true }) res: Response) {
-    const {userResponse , access_token : token} = await this.authService.login(dto);
+   @Post('login')
+@Throttle({ default: { limit: 1, ttl: 60 } })  
+async login(
+  @Body() dto: LoginDto,
+  @Res({ passthrough: true }) res: Response,
+) {
+  const { userResponse, access_token } = await this.authService.login(dto);
 
-    // res.cookie('access_token', token, {
-    //   httpOnly: true,
-    //   secure: true, // true in production with HTTPS
-    //   sameSite: 'none', // or 'none' if using cross-site cookies
-    //   path: "/", 
-    //     maxAge: 1000 * 60 * 60 * 24, // 1 day
-    // });
-    return {
-      success : true,
-      message: 'Login successful',
-      data :  userResponse,
-      token : token
-    }
-  
+  res.cookie('access_token', access_token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'strict', // IMPORTANT
+    path: '/',
+    maxAge: 1000 * 60 * 60 * 24, // 1 day
+  });
 
-  }
+  return {
+    success: true,
+    message: 'Login successful',
+    data: userResponse,
+  };
+}
+
 
     @Get('me')
     @UseGuards(JwtCookieGuard)
