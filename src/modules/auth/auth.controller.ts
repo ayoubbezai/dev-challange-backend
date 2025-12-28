@@ -19,12 +19,11 @@ async login(
 
 res.cookie('access_token', access_token, {
   httpOnly: true,
-  secure: true,          // REQUIRED
-  sameSite: 'none',      // REQUIRED for cross-site
+  secure: true,
+  sameSite: 'lax',        // or 'strict'
+  domain: '.gdgbatna.com',
   path: '/',
-  maxAge: 1000 * 60 * 60 * 24,
 });
-
   return {
     success: true,
     message: 'Login successful',
