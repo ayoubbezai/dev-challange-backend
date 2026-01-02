@@ -1,12 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import cookieParser from 'cookie-parser'; // ✅ default import
+import cookieParser from 'cookie-parser'; 
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // 🔥 REQUIRED: enables req.cookies
-  // app.use(cookieParser());
+  app.use(cookieParser());
 
   // 🔐 CORS for cookie-based auth
   app.enableCors({
