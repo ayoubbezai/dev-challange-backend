@@ -32,7 +32,7 @@ async getChallenges ( query : GetChallengesDto , userId : string){
     this.prisma.challenge.findMany({
       where,
       skip,
-      take : limit,
+      take : 11,
       orderBy: { createdAt: 'desc' },
       select: {
         id: true,

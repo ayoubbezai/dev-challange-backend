@@ -27,7 +27,7 @@ res.cookie('access_token', access_token, {
   return {
     success: true,
     message: 'Login successful',
-    data: userResponse,
+    data: access_token,
   };
 }
 
