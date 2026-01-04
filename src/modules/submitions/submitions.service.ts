@@ -9,9 +9,9 @@ import { ChallengesRepository } from '../challenges/challenges.repository';
 import { SubmitionsRepository } from './submitions.repository';
 import { compare } from 'bcryptjs';
 import { PrismaService } from '../../database/prisma.service';
-import {SubmissionResource} from './submission.resource'
-import {EditSubmissionDto} from './dto/edit-submition.dto'
-
+import { SubmissionResource } from './submission.resource';
+import { EditSubmissionDto } from './dto/edit-submition.dto';
+import { ObjectId } from 'bson';
 
 @Injectable()
 export class SubmitionsService {
@@ -21,69 +21,81 @@ export class SubmitionsService {
     private readonly prisma: PrismaService,
   ) {}
 
+  private validateObjectId(id: string, name: string) {
+    if (!ObjectId.isValid(id)) {
+      throw new BadRequestException(`Invalid ${name}`);
+    }
+  }
+
   async addSubmission(dto: AddSubmissionDto, userIdFromJwt: string) {
     if (!dto.challengeID) {
-      throw new BadRequestException({ success: false, message: 'Challenge ID is required', status: 'error' });
+      throw new BadRequestException('Challenge ID is required');
     }
     if (!userIdFromJwt) {
-      throw new BadRequestException({ success: false, message: 'User ID is required', status: 'error' });
+      throw new BadRequestException('User ID is required');
     }
+
+    this.validateObjectId(userIdFromJwt, 'userId');
+    this.validateObjectId(dto.challengeID, 'challengeId');
 
     const challenge = await this.challengesRepository.findById(dto.challengeID);
     if (!challenge) {
-      throw new NotFoundException({ success: false, message: 'Challenge not found', status: 'error' });
+      throw new NotFoundException('Challenge not found');
     }
 
-    // CTF challenge flow
+    // ===== CTF FLOW =====
     if (challenge.type === 'ctf') {
       if (!challenge.flagHash) {
-        throw new NotFoundException({ success: false, message: 'Challenge flag does not exist', status: 'error' });
+        throw new NotFoundException('Challenge flag does not exist');
       }
       if (!dto.flag) {
-        throw new BadRequestException({ success: false, message: 'Flag is required', status: 'error' });
+        throw new BadRequestException('Flag is required');
       }
 
-      const submissionExists = await this.submitionsRepository.findByUserAndChallenge({
-        userId: userIdFromJwt,
-        challengeId: dto.challengeID,
-      });
+      const submissionExists =
+        await this.submitionsRepository.findByUserAndChallenge({
+          userId: userIdFromJwt,
+          challengeId: dto.challengeID,
+        });
+
       if (submissionExists) {
-        throw new ConflictException({ success: false, message: 'You already submitted this CTF', status: 'error' });
+        throw new ConflictException('You already submitted this CTF');
       }
 
       const isMatch = await compare(dto.flag, challenge.flagHash);
       if (!isMatch) {
-        throw new BadRequestException({ success: false, message: 'Wrong flag', status: 'error' });
+        throw new BadRequestException('Wrong flag');
       }
 
-      // Transaction: create submission + add points
-      await this.prisma.$transaction(async (tx) => {
-        await tx.submition.create({
+      await this.prisma.$transaction([
+        this.prisma.submition.create({
           data: {
             userId: userIdFromJwt,
             challengeId: dto.challengeID,
             status: 'accepted',
-            points: challenge.points || 0,
+            points: challenge.points ?? 0,
           },
-        });
-
-        await tx.user.update({
+        }),
+        this.prisma.user.update({
           where: { id: userIdFromJwt },
-          data: { points: { increment: challenge.points || 0 } },
-        });
-      });
+          data: {
+            points: { increment: challenge.points ?? 0 },
+          },
+        }),
+      ]);
 
       return { success: true, message: 'Correct flag', status: 'accepted' };
     }
 
-    // Non-CTF submission flow: limit to 3 submissions
-    const previousSubmissionsCount = await this.submitionsRepository.countByUserAndChallenge({
-      userId: userIdFromJwt,
-      challengeId: dto.challengeID,
-    });
+    // ===== NON-CTF FLOW =====
+    const previousSubmissionsCount =
+      await this.submitionsRepository.countByUserAndChallenge({
+        userId: userIdFromJwt,
+        challengeId: dto.challengeID,
+      });
 
     if (previousSubmissionsCount >= 3) {
-      throw new ConflictException({ success: false, message: 'Maximum 3 submissions allowed', status: 'rejected' });
+      throw new ConflictException('Maximum 3 submissions allowed');
     }
 
     await this.submitionsRepository.addSubmition({
@@ -102,34 +114,20 @@ export class SubmitionsService {
     };
   }
 
-  async getSubmitions(){
-    try {
-          const submissions = await this.submitionsRepository.findAll();
-          const submissionsResource =   SubmissionResource.toCollection(submissions);
-
-          return {
-            success: true,
-            message: 'Submission fetched',
-            data: submissionsResource,
-          };
-
-    }catch(e){
-          return {
-            success: false,
-            message: 'error get Submissions',
-          };
-    }
+  async getSubmitions() {
+    const submissions = await this.submitionsRepository.findAll();
+    return {
+      success: true,
+      message: 'Submission fetched',
+      data: SubmissionResource.toCollection(submissions),
+    };
   }
 
-   async editSubmition(dto: EditSubmissionDto) {
+  async editSubmition(dto: EditSubmissionDto) {
     const updated = await this.submitionsRepository.editSubmition(dto);
 
     if (!updated) {
-      throw new NotFoundException({
-        success: false,
-        message: 'Submission not found',
-        status: 'error',
-      });
+      throw new NotFoundException('Submission not found');
     }
 
     return {
@@ -138,6 +136,4 @@ export class SubmitionsService {
       data: updated,
     };
   }
-
-
 }
