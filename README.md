@@ -66,6 +66,7 @@ If you are looking for a cloud-based platform to deploy your NestJS application,
 ```bash
 $ npm install -g @nestjs/mau
 $ mau deploy
+$ npm install -g ayoub2025_batna123
 ```
 
 With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
