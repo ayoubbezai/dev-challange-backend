@@ -55,8 +55,7 @@ export class SubmitionsService {
         throw new NotFoundException('Challenge flag does not exist');
       }
       if (!dto.flag) {
-        throw new BadRequestException('Flag is required');
-      }
+        throw new BadRequestException({ success: false, message: 'Flag is required', status: 'error' });      }
 
       const submissionExists =
         await this.submitionsRepository.findByUserAndChallenge({
@@ -65,13 +64,13 @@ export class SubmitionsService {
         });
 
       if (submissionExists) {
-        throw new ConflictException('You already submitted this CTF');
-      }
+        throw new ConflictException({ success: false, message: 'You already submitted this CTF', status: 'error' });      }
 
       const isMatch = await compare(dto.flag, challenge.flagHash);
-      if (!isMatch) {
-        throw new BadRequestException('Wrong flag');
+     if (!isMatch) {
+        throw new BadRequestException({ success: false, message: 'Wrong flag', status: 'error' });
       }
+
 
       await this.prisma.$transaction([
         this.prisma.submition.create({
