@@ -12,11 +12,11 @@ import {EditParticipantDto} from './dto/edit-participant.dto'
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  // @Post('participants')
-  // @Throttle({ default: { limit: 1, ttl: 60 } })  
-  // async registerParticipant(@Body() dto: CreateParticipantDto) {
-  //   return this.usersService.registerParticipant(dto);
-  // }
+  @Post('participants')
+  @Throttle({ default: { limit: 1, ttl: 60 } })  
+  async registerParticipant(@Body() dto: CreateParticipantDto) {
+    return this.usersService.registerParticipant(dto);
+  }
 
   @Get('leader-board')
   @UseGuards(JwtCookieGuard) 

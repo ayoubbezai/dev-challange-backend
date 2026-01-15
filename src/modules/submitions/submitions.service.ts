@@ -29,95 +29,95 @@ export class SubmitionsService {
 
   async addSubmission(dto: AddSubmissionDto, userIdFromJwt: string) {
 
-      return { success: false, message: 'Dev Challenges end'};
+      // return { success: false, message: 'Dev Challenges end'};
 
 
-    // if (!dto.challengeID) {
-    //   throw new BadRequestException('Challenge ID is required');
-    // }
-    // if (!userIdFromJwt) {
-    //   throw new BadRequestException('User ID is required');
-    // }
+    if (!dto.challengeID) {
+      throw new BadRequestException('Challenge ID is required');
+    }
+    if (!userIdFromJwt) {
+      throw new BadRequestException('User ID is required');
+    }
 
-    // this.validateObjectId(userIdFromJwt, 'userId');
-    // this.validateObjectId(dto.challengeID, 'challengeId');
+    this.validateObjectId(userIdFromJwt, 'userId');
+    this.validateObjectId(dto.challengeID, 'challengeId');
 
-    // const challenge = await this.challengesRepository.findById(dto.challengeID);
-    // if (!challenge) {
-    //   throw new NotFoundException('Challenge not found');
-    // }
+    const challenge = await this.challengesRepository.findById(dto.challengeID);
+    if (!challenge) {
+      throw new NotFoundException('Challenge not found');
+    }
 
 
 
-    // // ===== CTF FLOW =====
-    // if (challenge.type === 'ctf') {
-    //   if (!challenge.flagHash) {
-    //     throw new NotFoundException('Challenge flag does not exist');
-    //   }
-    //   if (!dto.flag) {
-    //     throw new BadRequestException('Flag is required');
-    //   }
+    // ===== CTF FLOW =====
+    if (challenge.type === 'ctf') {
+      if (!challenge.flagHash) {
+        throw new NotFoundException('Challenge flag does not exist');
+      }
+      if (!dto.flag) {
+        throw new BadRequestException('Flag is required');
+      }
 
-    //   const submissionExists =
-    //     await this.submitionsRepository.findByUserAndChallenge({
-    //       userId: userIdFromJwt,
-    //       challengeId: dto.challengeID,
-    //     });
+      const submissionExists =
+        await this.submitionsRepository.findByUserAndChallenge({
+          userId: userIdFromJwt,
+          challengeId: dto.challengeID,
+        });
 
-    //   if (submissionExists) {
-    //     throw new ConflictException('You already submitted this CTF');
-    //   }
+      if (submissionExists) {
+        throw new ConflictException('You already submitted this CTF');
+      }
 
-    //   const isMatch = await compare(dto.flag, challenge.flagHash);
-    //   if (!isMatch) {
-    //     throw new BadRequestException('Wrong flag');
-    //   }
+      const isMatch = await compare(dto.flag, challenge.flagHash);
+      if (!isMatch) {
+        throw new BadRequestException('Wrong flag');
+      }
 
-    //   await this.prisma.$transaction([
-    //     this.prisma.submition.create({
-    //       data: {
-    //         userId: userIdFromJwt,
-    //         challengeId: dto.challengeID,
-    //         status: 'accepted',
-    //         points: challenge.points ?? 0,
-    //       },
-    //     }),
-    //     this.prisma.user.update({
-    //       where: { id: userIdFromJwt },
-    //       data: {
-    //         points: { increment: challenge.points ?? 0 },
-    //       },
-    //     }),
-    //   ]);
+      await this.prisma.$transaction([
+        this.prisma.submition.create({
+          data: {
+            userId: userIdFromJwt,
+            challengeId: dto.challengeID,
+            status: 'accepted',
+            points: challenge.points ?? 0,
+          },
+        }),
+        this.prisma.user.update({
+          where: { id: userIdFromJwt },
+          data: {
+            points: { increment: challenge.points ?? 0 },
+          },
+        }),
+      ]);
 
-    //   return { success: true, message: 'Correct flag', status: 'accepted' };
-    // }
+      return { success: true, message: 'Correct flag', status: 'accepted' };
+    }
 
-    // // ===== NON-CTF FLOW =====
-    // const previousSubmissionsCount =
-    //   await this.submitionsRepository.countByUserAndChallenge({
-    //     userId: userIdFromJwt,
-    //     challengeId: dto.challengeID,
-    //   });
+    // ===== NON-CTF FLOW =====
+    const previousSubmissionsCount =
+      await this.submitionsRepository.countByUserAndChallenge({
+        userId: userIdFromJwt,
+        challengeId: dto.challengeID,
+      });
 
-    // if (previousSubmissionsCount >= 3) {
-    //   throw new ConflictException('Maximum 3 submissions allowed');
-    // }
+    if (previousSubmissionsCount >= 3) {
+      throw new ConflictException('Maximum 3 submissions allowed');
+    }
 
-    // await this.submitionsRepository.addSubmition({
-    //   userId: userIdFromJwt,
-    //   challengeId: dto.challengeID,
-    //   status: 'pending',
-    //   points: 0,
-    //   link: dto.link,
-    // });
+    await this.submitionsRepository.addSubmition({
+      userId: userIdFromJwt,
+      challengeId: dto.challengeID,
+      status: 'pending',
+      points: 0,
+      link: dto.link,
+    });
 
-    // return {
-    //   success: true,
-    //   message: 'Submission added',
-    //   status: 'pending',
-    //   data: challenge,
-    // };
+    return {
+      success: true,
+      message: 'Submission added',
+      status: 'pending',
+      data: challenge,
+    };
   }
 
   async getSubmitions() {
